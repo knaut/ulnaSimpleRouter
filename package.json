@@ -1,0 +1,24 @@
+{
+  "name": "ulnaSimpleRouter",
+  "version": "0.0.1",
+  "description": "getting simple, graceful routing with ulna",
+  "main": "server.js",
+  "repository": "",
+  "author": "knaut",
+  "license": "BSD",
+  "dependencies": {
+    "grunt": "~0.4.5",
+    "grunt-bower-requirejs": "^2.0.0",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-sass": "~0.18.0",
+    "hapi": "^6.11.1",
+    "jade": "^1.9.2",
+    "joi": "^4.9.0",
+    "node-sass": "~2.0.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "grunt-bowercopy": "^1.2.0"
+  }
+}

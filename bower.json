@@ -1,0 +1,25 @@
+{
+  "name": "indelibleSandbox",
+  "dependencies": {
+    "foundation": "~5.5.2",
+    "underscore": "~1.8.3",
+    "requirejs": "~2.1.17",
+    "jquery": "*"
+  },
+  "resolutions": {
+    "underscore": "~1.8.3"
+  },
+  "version": "0.0.1",
+  "authors": [
+    "knaut <info@knaut.net>"
+  ],
+  "description": "a dreamy cocktail",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
