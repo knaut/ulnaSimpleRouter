@@ -1,5 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var extend = require('./extend');
+var Events = require('./Events');
 
 // COMPONENTS
 // Like Marionette or Backbone views, but able to be nested within a recursive tree-like hierarchy
@@ -43,6 +44,9 @@ var proto = {
 		if (this.events) {
 			this.bindEvents();
 		}
+
+		this.trigger('initialized');
+		console.log('init comp')
 	},
 	deinitialize: function() {
 		if (this.store) {
@@ -73,11 +77,9 @@ var proto = {
 		var template = _.template( this.template );
 		template = template( this.data );
 
-		this.$el.css({
-			visibility: 'hidden'	// hide any incoming html first, use showElement to unhide
-		});
 		this.$el.html( template );
-		this.showElement();
+
+		this.trigger('rendered');
 	},
 
 	renderAsChild: function() {
@@ -85,6 +87,8 @@ var proto = {
 		template = template( this.data );
 
 		this.$el = $( template );
+
+		this.trigger('renderedAsChild');
 	},
 
 	showElement: function() {
@@ -280,14 +284,14 @@ var proto = {
 	}
 }
 
-_.extend(Component.prototype, proto);
+_.extend(Component.prototype, Events, proto);
 
 Component.extend = extend;
 
 module.exports = Component;
 
 
-},{"./extend":7}],2:[function(require,module,exports){
+},{"./Events":3,"./extend":7}],2:[function(require,module,exports){
 var extend = require('./extend');
 var Events = require('./Events');
 
@@ -839,36 +843,9 @@ var Store = function(obj) {
 	this.initialize.apply(this, arguments);
 };
 
-/*
-	initialize,				// all preliminary setup
-	deinitialize,			// deconstruction, unbinding events, etc
-
-	bindInternals, 			// convenience function for binding internal events (and events the component listens to)
-	registerWithDispatcher, 	// all dispatcher registrations (blank by default)
-
-	compareIdsByLevel, 		// takes two concatenated cids and checks if they match to a certain level, informing us if the two are related.
-								// this is particularly useful in event handlers when listening to blanket dispatcher events.
-								// use this function when you want to block a store's process because the dispatcher's message was irrelevant based
-								// on the component parent-child hierarchy
-
-	getCurrentState,				// needs work, should provide a copied object of this store's state
-	getCurrentProps,				// needs work, should provide a copied object of this store's props
-
-	setState,				// takes an incoming object, sets state properties based on that object. if successful, fires off an event
-	setProps,				// takes an incoming object, sets state properties based on that object. if successful, fires off an event
-
-	shouldComponentUpdate,	// takes the current state (props?) and a mutated version of the same object, compares the two, and if they are different, fires an event
-	startLifecycle,			// kicks off the store's update process, firing the specified functions in a queue
-
-	startUpdate,			// update process part 1
-	onUpdate,				// update process part 2 (most often used)
-	afterUpdate			// any post-update processes
-	
-*/
-
 _.extend(Store.prototype, Events, {
 	initialize: function() {
-		this.id = _.uniqueId('s');
+		this.id = this.parent.id + _.uniqueId('s');
 		this.setProps(this.model);
 
 		// initial state from constructor args

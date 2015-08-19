@@ -15,7 +15,7 @@ var appHead = '<!DOCTYPE html.no-js(lang=\'en\')>' +
 		'</script>' +
 	'</head>' +
 	'<body>' +
-		'<div id="app-root"></div>' +
+		'<div id="app-root" style="display: none"></div>' +
 	'</body>' +
 '</html>';
 

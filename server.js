@@ -41,6 +41,26 @@ server.route({
 });
 
 server.route({
+	path: '/tyler',
+	method: 'GET',
+	handler: function(request, reply) {
+		app.children[1].handleChildClick();
+		$('body').html( app.$el );
+		reply( $.html() );
+	}
+});
+
+server.route({
+	path: '/marla',
+	method: 'GET',
+	handler: function(request, reply) {
+		app.children[2].handleChildClick();
+		$('body').html( app.$el );
+		reply( $.html() );
+	}
+});
+
+server.route({
 	path: '/css/{path*}',
 	method: 'GET',
 	handler: {

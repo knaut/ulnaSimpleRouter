@@ -191,7 +191,46 @@ define([
 		
 		// we use static data since this is a simple router/history manipulation demo
 		// for now, app doesn't need a store
-		app = new Ulna.Component({
+		var App = Ulna.Component.extend({
+			setStore: function() {
+
+				// this is hacky, but works at least as a proof of concept
+				// we call the relevant event handlers directly, spoofing the equivalent state
+				// based on the current location path
+				this.on('initialized', function() {
+
+					var location = window.location.pathname;
+
+					switch (location) {
+						case '/' || '':
+							console.log('initalized on home');
+						break;
+						case '/jack':
+							console.log('initalized on jack');
+							this.children[0].handleChildClick();
+						break;
+						case '/tyler':
+							console.log('initalized on tyler');
+							this.children[1].handleChildClick();
+						break;
+						case '/marla':
+							console.log('initalized on marla');
+							this.children[2].handleChildClick();
+						break;
+					}
+				}, this);
+
+				// to work around the client-side render flash, we set the server HTML to be undisplayed.
+				// once the clientside is rendered, we show the root level app.
+				this.on('rendered', function() {
+					this.$el.css({
+						display: 'block'
+					});
+				}, this);
+			}
+		});
+
+		app = new App({
 			$el: '#app-root',
 
 			template: '<div id="app-container"></div>',
