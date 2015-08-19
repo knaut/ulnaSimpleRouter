@@ -1040,6 +1040,21 @@ var Ulna = {};
 // want global "pubsub" in a convenient place.
 _.extend(Ulna, Events);
 
+// we'll set underscore's template settings by default
+// this can be overruled in Ulna.templateSettings
+/*
+	{{ interpolate }}
+	-- escape --
+	<< evaluate >>
+*/
+_.templateSettings = {
+	interpolate: /\{\{(.+?)\}\}/g,
+	escape: /\-\-(.+?)\-\-/g,
+	evaluate: /\<\<(.+?)\>\>/g
+}
+
+Ulna.templateSettings = _.templateSettings;
+
 Ulna.extend = extend;
 Ulna.Events = Events;
 Ulna.Component = Component;

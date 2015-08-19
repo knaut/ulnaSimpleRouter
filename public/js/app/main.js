@@ -1,16 +1,8 @@
 define([
 	'jquery', 
-	'backbone', 
-	'marionette', 
-	'underscore', 
-	'foundation', 
+	'underscore',
 	'ulna'
- ], function ($, Backbone, Marionette, _, Foundation, Ulna) {
-        _.templateSettings = {
-			interpolate: /\{\{(.+?)\}\}/g,
-			escape: /\-\-(.+?)\-\-/g,
-			evaluate: /\<\<(.+?)\>\>/g
-		}
+ ], function ($, _, Ulna) {
 
 		var Dispatch = new Ulna.Dispatcher({
 			actions: [
@@ -32,22 +24,18 @@ define([
 				'marla': 'handleMarla'
 			},
 			registerWithDispatcher: function() {
-				// Dispatch.register('update_route', this, 'handleUpdateRoute');
 				Dispatch.register('child_click', this, 'handleByRoute');
 				Dispatch.register('quote_close', this, 'handleByRoute');
 			},
 			handleByRoute: function() {
-				// console.log('router handleByRoute', arguments[0]);
+				// loop through our routes and call the associated method
 				for (var route in this.routes) {
 					if (arguments[0].hasOwnProperty('name') && arguments[0].name === route) {
-						// console.log('update with ' + route);
 						this[ this.routes[route] ]( arguments[0].id );
 					}
 				}
 			},
 			handleHome: function( id ) {
-				// console.log('handleHome', id);
-
 				this.updateHistory({
 					id: id,
 					title: 'home',
@@ -55,8 +43,6 @@ define([
 				});
 			},
 			handleJack: function( id ) {
-				// console.log('handleJack', id);
-
 				this.updateHistory({
 					id: id,
 					title: 'jack',
@@ -64,8 +50,6 @@ define([
 				});
 			},
 			handleTyler: function( id ) {
-				// console.log('handleTyler', id);
-
 				this.updateHistory({
 					id: id,
 					title: 'tyler',
@@ -73,8 +57,6 @@ define([
 				});
 			},
 			handleMarla: function( id ) {
-				// console.log('handleMarla', id);
-
 				this.updateHistory({
 					id: id,
 					title: 'marla',
@@ -84,6 +66,7 @@ define([
 			handlePopState: function(e) {
 				// do everything that relates to the back/forward buttons here
 				var state = e.state;
+				console.log(state)
 				
 				if (e.state === null || !e.state) {
 					var payload = {
@@ -94,13 +77,13 @@ define([
 					var payload = state;
 				}
 
-				console.log('handlePopState', payload)
-
 				Dispatch.dispatch('pop_state', payload);
+				document.title = payload.title;
 			}
 		});
 
 		// quotes are grandchildren, or third-level descendants of App, direct descendants of ChildComponent
+		// they're static for now
 		var Quote = Ulna.Component.extend({
 			template: '<div class="quote"><span>{{quote}}</span></div>',
 			events: {
@@ -131,18 +114,15 @@ define([
 			},
 			handleQuoteClose: function() {
 				var payload = arguments[0];
-				console.log('childStore handleQuoteClose', payload)
 
 				this.trigger('startUpdate', {
 					active: null
 				});
 			},
 			handlePopState: function() {
-				console.log('child store popstate', arguments[0], this.parent.id);
-
-				console.log(arguments[0].title)
+				// closing the quote is the equivalent of going back to home
 				if ( arguments[0].title === 'home' ) {
-					console.log('blerg')
+					// instead of dispatching again, we'll call our equivalent event handler, for brevity
 					this.handleQuoteClose();
 					return false;
 				}
@@ -150,8 +130,6 @@ define([
 				if ( arguments[0].id !== this.parent.id ) {
 					return false;
 				}
-
-
 
 				this.trigger('startUpdate', {
 					active: arguments[0].title
@@ -166,7 +144,8 @@ define([
 				});
 			}
 		});
-
+		
+		// direct descendents of the top-level component
 		var ChildComponent = Ulna.Component.extend({
 			childType: Quote,
 			events: {
@@ -197,6 +176,7 @@ define([
 			}
 		});
 
+		// we'll extend the component again to prove we can render multiple childTypes
 		var JackChild = ChildComponent.extend({
 			template: '<div id="jack" class="child"><span class="trigger">{{name}}</span></div>'
 		});
@@ -208,71 +188,10 @@ define([
 		var MarlaChild = ChildComponent.extend({
 			template: '<div id="marla" class="child"><span class="trigger">{{name}}</span></div>'
 		});
-
-		var AppStore = Ulna.Store.extend({
-			registerWithDispatcher: function() {
-				Dispatch.register( 'child_click', this, 'handleChildClick' );
-				Dispatch.register( 'quote_close', this, 'handleQuoteClose' );
-				Dispatch.register( 'pop_state', this, 'handlePopState' );
-			},
-			handleChildClick: function() {
-				var payload = arguments[0];
-
-				this.trigger('startUpdate', {
-					child: payload.name
-				});
-			},
-			handleQuoteClose: function() {
-				var payload = arguments[0];
-
-				this.trigger('startUpdate', {
-					child: null
-				});
-			},
-			handleUpdateRoute: function() {
-				// console.log('handle any update route:', arguments);
-				var payload = arguments[0];
-				// console.log('payload', payload);
-				
-				this.trigger('startUpdate', {
-					child: payload.name
-				});
-			},
-			handlePopState: function() {
-				this.trigger('startUpdate', {
-					child: arguments[0].title
-				});
-			},
-			onUpdate: function() {
-				var payload = arguments[0];
-				payload = payload[0];
-
-				this.setState({
-					child: payload.child
-				});
-
-				return true;
-			}
-		});
-
-		var App = Ulna.Component.extend({
-			setStore: function() {
-				this.store = new AppStore({
-					parent: this,
-					state: {
-						child: null
-					}
-				});
-			},
-			onUpdate: function() {
-				var state = this.store.getCurrentState();
-
-				// console.log('App update', state);
-
-			}
-		});
 		
-		app = new App({
+		// we use static data since this is a simple router/history manipulation demo
+		// for now, app doesn't need a store
+		app = new Ulna.Component({
 			$el: '#app-root',
 
 			template: '<div id="app-container"></div>',
