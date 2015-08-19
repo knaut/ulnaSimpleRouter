@@ -28,6 +28,14 @@ server.route({
 });
 
 server.route({
+	path: '/test',
+	method: 'GET',
+	handler: function(request, reply) {
+		reply('test');
+	}
+});
+
+server.route({
 	path: '/css/{path*}',
 	method: 'GET',
 	handler: {

@@ -16,7 +16,8 @@
     "jade": "^1.9.2",
     "joi": "^4.9.0",
     "node-sass": "~2.0.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "cheerio": "*"
   },
   "devDependencies": {
     "grunt-bowercopy": "^1.2.0"

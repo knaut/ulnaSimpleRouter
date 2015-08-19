@@ -217,7 +217,6 @@ define([
 								quote: 'I am Jack\'s complete lack of surprise.'
 							}
 						]
-						
 					},
 					{
 						name: 'tyler',
