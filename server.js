@@ -2,6 +2,8 @@
 var Hapi = require("hapi");
 var Joi = require('joi');
 
+var $ = require('./src/head.js');
+
 var server = new Hapi.Server(8080, "localhost", {
 	views: {
 		engines: {
@@ -17,6 +19,7 @@ server.start(function() {
 });
 
 // METHODS
+var app = require('./src/main.js');
 
 // ROUTES
 server.route({
@@ -28,10 +31,12 @@ server.route({
 });
 
 server.route({
-	path: '/test',
+	path: '/jack',
 	method: 'GET',
 	handler: function(request, reply) {
-		reply('test');
+		app.children[0].handleChildClick();
+		$('body').html( app.$el );
+		reply( $.html() );
 	}
 });
 

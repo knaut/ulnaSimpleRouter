@@ -11,7 +11,7 @@ define([
 				'child_click',
 				'pop_state'
 			]
-		})
+		});
 
 		var Router = Ulna.Router.extend({
 			events: {
