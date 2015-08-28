@@ -10,6 +10,8 @@ var Dispatch = new Ulna.Dispatcher({
 	]
 });
 
+// we don't need a router on the server, so we can leave it out
+
 // var Router = Ulna.Router.extend({
 // 	events: {
 // 		'popstate': 'handlePopState'
