@@ -1,7 +1,10 @@
 # ulnaSimpleRouter
 A simple isomorphic app demonstrating Ulna's routing capabilities
 
-Until Ulna's documentation is fleshed out, this example implementation should serve as a loose guide and demonstration for now.
+# Deprecation
+This example uses the previous version of Ulna. The new version of the library has a radically simplified API. As such, this example is no longer compatible. It still serves as a good example of the previous version and its capabilities, however.
+
+# Installation
 
 The server runs on Hapi. To run it, download the repo, install the dependencies, and then
 
